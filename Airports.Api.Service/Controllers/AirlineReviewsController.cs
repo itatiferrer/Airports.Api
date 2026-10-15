@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Airports.Api.Service.Infrastructure.Data;
 
 namespace Airports.Api.Service.Controllers
 {
@@ -6,22 +8,42 @@ namespace Airports.Api.Service.Controllers
     [Route("api/v1/airline-reviews")]
     public class AirlineReviewsController : ControllerBase
     {
-        // GET: /api/v1/airline-reviews
+        private readonly Issco2026AirportsDbContext _context;
+
+        public AirlineReviewsController(
+            Issco2026AirportsDbContext context)
+        {
+            _context = context;
+        }
+
+        // GET: api/v1/airline-reviews
         [HttpGet]
-        public IActionResult GetAirlineReviews()
+        public async Task<IActionResult> GetAirlineReviews()
         {
-            return Ok();
+            var reviews = await _context.AirlineReviews
+                .AsNoTracking()
+                .ToListAsync();
+
+            return Ok(reviews);
         }
 
-        // GET: /api/v1/airline-reviews/{id}
+        // GET: api/v1/airline-reviews/{id}
         [HttpGet("{id}")]
-        public IActionResult GetAirlineReview(int id)
+        public async Task<IActionResult> GetAirlineReview(int id)
         {
-            return Ok();
-        }
+            var review = await _context.AirlineReviews
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == id);
 
-        // POST: /api/v1/airline-reviews
-        [HttpPost]
+            if (review == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(review);
+        }
+// POST: /api/v1/airline-reviews
+[HttpPost]
         public IActionResult CreateAirlineReview()
         {
             return Ok();

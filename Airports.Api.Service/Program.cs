@@ -8,7 +8,12 @@ builder.Services.AddDbContext<Issco2026AirportsDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("AirportsDb")));
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler =
+            System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
 
 // Configuración de Swagger para documentar y probar la API.
 builder.Services.AddSwaggerGen();
